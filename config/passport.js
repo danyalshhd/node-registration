@@ -51,9 +51,18 @@ module.exports = function (passport) {
 
                         // save the user
                         newUser.save(function (err) {
-                            if (err)
+                            if (err) {
                                 throw err;
-                            return done(null, newUser);
+                            } else {
+                                const emailSender = require("../app/models/email");
+                                emailSender.sendEmail(email)
+                                    .then((value) => {
+                                        return done(null, newUser);
+                                    })
+                                    .catch((err) => {
+                                        return done(err);
+                                    })
+                            }
                         });
                     }
 
@@ -92,12 +101,6 @@ module.exports = function (passport) {
 
         }));
 
-    // code for login (use('local-login', new LocalStategy))
-    // code for signup (use('local-signup', new LocalStategy))
-
-    // =========================================================================
-    // FACEBOOK ================================================================
-    // =========================================================================
     passport.use(new FacebookStrategy({
 
             // pull in our app id and secret from our auth.js file
@@ -140,7 +143,14 @@ module.exports = function (passport) {
                                 throw err;
 
                             // if successful, return the new user
-                            return done(null, newUser);
+                            const emailSender = require("../app/models/email");
+                            emailSender.sendEmail(newUser.facebook.email)
+                                .then((value) => {
+                                    return done(null, newUser);
+                                })
+                                .catch((err) => {
+                                    return done(err);
+                                })
                         });
                     }
 
