@@ -1,4 +1,5 @@
 var express = require('express');
+require("./app/models/email");
 var app = express();
 var port = process.env.PORT || 8080;
 var mongoose = require('mongoose');

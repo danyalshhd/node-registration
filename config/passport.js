@@ -54,14 +54,8 @@ module.exports = function (passport) {
                             if (err) {
                                 throw err;
                             } else {
-                                const emailSender = require("../app/models/email");
-                                emailSender.sendEmail(email)
-                                    .then((value) => {
-                                        return done(null, newUser);
-                                    })
-                                    .catch((err) => {
-                                        return done(err);
-                                    })
+                                const eventEmitter = require("../app/models/email");
+                                eventEmitter.emit('sendEmail', email, done, newUser);
                             }
                         });
                     }
@@ -143,14 +137,8 @@ module.exports = function (passport) {
                                 throw err;
 
                             // if successful, return the new user
-                            const emailSender = require("../app/models/email");
-                            emailSender.sendEmail(newUser.facebook.email)
-                                .then((value) => {
-                                    return done(null, newUser);
-                                })
-                                .catch((err) => {
-                                    return done(err);
-                                })
+                            const eventEmitter = require("../app/models/email");
+                            eventEmitter.emit('sendEmail', newUser.facebook.email, done, newUser);
                         });
                     }
 
