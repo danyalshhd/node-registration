@@ -2,6 +2,9 @@ A friend list application using NodeJs, MongoDB, JWT (JSON web tokens)
 
 * sends email when signup
 * facebook integration for registration
+* JWT token verification with the loggedIn user can be checked by loging in the system and hit
+  the button User Detail which will open an alert box giving email and name of user currently logged in
+  by giving the token
 
 ## Install
 To install the dependencies:

@@ -83,7 +83,10 @@ function userDetail() {
     http.onreadystatechange = function () {//Call a function when the state changes.
         if (http.readyState == 4 && http.status == 200) {
             var response = JSON.parse(http.response);
-            alert(response.user._doc.local.email);
+            var email = response.user._doc.local.email;
+            var name = response.user._doc.local.name;
+
+            alert("User Detail:\nEmail: " + email + "\nName: " + name);
         }
     }
     http.send(JSON.stringify({ token: document.getElementsByName("token")[0].value }));
