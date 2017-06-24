@@ -17,13 +17,11 @@ To start the server:
 
     npm start
 
-##Example
-Run following example commands for each of the questions:<br>
+#Run following on the browser
 
     http://localhost:8080/
 
-##Test
-Run following commands for running tests:<br>
+##Run following for tests:<br>
 
     npm test
 
