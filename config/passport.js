@@ -55,7 +55,7 @@ module.exports = function (passport) {
                             if (err) {
                                 throw err;
                             } else {
-                                const eventEmitter = require("../app/models/email");
+                                const eventEmitter = require("../app/controller/email");
                                 eventEmitter.emit('sendEmail', email, done, newUser);
                             }
                         });
@@ -139,7 +139,7 @@ module.exports = function (passport) {
                                 throw err;
 
                             // if successful, return the new user
-                            const eventEmitter = require("../app/models/email");
+                            const eventEmitter = require("../app/controller/email");
                             eventEmitter.emit('sendEmail', newUser.facebook.email, done, newUser);
                         });
                     }
