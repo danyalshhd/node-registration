@@ -13,7 +13,7 @@ To install the dependencies:
     populate environment variables "sessionSecret" and "SECRET" with some random alphabetical values
     Environment variables can be exported in the project directory by
        Linux:  export sessionSecret=randomValue
-       Windows: enter command 'node' press enter, and then set by process.env.sessionSecret='randomValue'
+       Windows: set sessionSecret=helloworld
 
 ## Start Server
 To start the server:
