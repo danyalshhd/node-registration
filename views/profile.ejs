@@ -27,15 +27,19 @@
                 <%if(user!= null){%>
                     <% user.forEach(function(us,i){ %>
                         <p>
-                            <strong>Name</strong>: <%= us.local.name %><br>
-                            <% if(us._id.toString() != signedUser._id.toString() && signedUser.friendIds.indexOf(us._id.toString()) == -1){%>
+                            <div class="row">
+                                <div class="col-sm-6"><strong>Name</strong>: <%= us.local.name %><br></div>
+                                <% if(us._id.toString() != signedUser._id.toString() && signedUser.friendIds.indexOf(us._id.toString()) == -1){%>
+                                <div class="col-sm-6">
+                                    <form method="post" action="/user/<%= us._id.toString()%>/addFriend" class="submit_this">
+                                        <input type="hidden" class="btn btn-primary" name="token" value="<%= token %>" />
+                                        <input type="submit" class="btn btn-primary" value="Add Friend"  />
+                                    </form>
+                                </div>
 
-                                <form method="post" action="/user/<%= us._id.toString()%>/addFriend" class="submit_this">
-                                    <input type="hidden" class="btn btn-primary" name="token" value="<%= token %>" />
-                                    <input type="submit" class="btn btn-primary" value="Add Friend"  />
-                                </form>
-
-                            <%}%>
+                                <%}%>
+                            </div>
+                            <hr>
                         </p>
 
                     <%})%>

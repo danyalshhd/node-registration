@@ -14,7 +14,7 @@ function getUsers(req, res) {
             token = queryToken;
         }
 
-        User.find({},{ }, function (err, response) {
+        User.find({},{},{sort: {_id:-1}}, function (err, response) {
             if(err){
                 res.render('error.ejs', {
                     error : err.message
