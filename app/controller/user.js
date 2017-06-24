@@ -83,7 +83,6 @@ function addFriend(req, res) {
             .then(updateFriendsId)
             .then(()=>{
                 res.redirect('/profile?token=' + token);
-                //getUsers(req, res, token);
             })
             .catch((error)=>{
                 res.render('error.ejs', {
