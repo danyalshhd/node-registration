@@ -101,8 +101,7 @@ module.exports = function (passport) {
             // pull in our app id and secret from our auth.js file
             clientID: configAuth.facebookAuth.clientID,
             clientSecret: configAuth.facebookAuth.clientSecret,
-            callbackURL: configAuth.facebookAuth.callbackURL
-
+            callbackURL: configAuth.facebookAuth.callbackURL,
         },
 
         // facebook will send back the token and profile
@@ -129,7 +128,7 @@ module.exports = function (passport) {
                         // set all of the facebook information in our user model
                         newUser.local.id = profile.id; // set the users facebook id
                         newUser.local.token = token; // we will save the token that facebook provides to the user
-                        newUser.local.name = profile.name.givenName + ' ' + profile.name.familyName; // look at the passport user profile to see how names are returned
+                        newUser.local.name = profile.displayName; // look at the passport user profile to see how names are returned
                         newUser.local.email = profile.emails != null ? profile.emails[0].value : ""; // facebook can return multiple emails so we'll take the first
                         newUser.local.socialNetwork = "Facebook";
 
@@ -140,7 +139,7 @@ module.exports = function (passport) {
 
                             // if successful, return the new user
                             const eventEmitter = require("../app/controller/email");
-                            eventEmitter.emit('sendEmail', newUser.facebook.email, done, newUser);
+                            eventEmitter.emit('sendEmail', newUser.local.email, done, newUser);
                         });
                     }
 

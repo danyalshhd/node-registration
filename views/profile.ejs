@@ -31,6 +31,7 @@
                             <% if(us._id.toString() != signedUser._id.toString() && signedUser.friendIds.indexOf(us._id.toString()) == -1){%>
 
                                 <form method="post" action="/user/<%= us._id.toString()%>/addFriend" class="submit_this">
+                                    <input type="hidden" class="btn btn-primary" name="token" value="<%= token %>" />
                                     <input type="submit" class="btn btn-primary" value="Add Friend"  />
                                 </form>
 
