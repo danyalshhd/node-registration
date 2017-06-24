@@ -1,55 +1,29 @@
-function authenticateViaJWT(req, res) {
-
-    let User = require('../models/user');
-    let jwt = require('jsonwebtoken');
-    let app = req.app;
-
-    User.findOne({
-        "local.email": req.body.email
-    }, function (err, user) {
-
-        if (err) throw err;
-
-        if (!user) {
-            res.json({success: false, message: 'Authentication failed. User not found.'});
-        } else if (user) {
-
-            // check if password matches
-            if (!user.validPassword(req.body.password)) {
-                res.json({success: false, message: 'Authentication failed. Wrong password.'});
-            } else {
-
-                // if user is found and password is right
-                // create a token
-                var token = jwt.sign(user, process.env.SECRET, {
-                    expiresIn : 60*60*24
-                });
-
-                // return the information including token as JSON
-                res.json({
-                    success: true,
-                    message: 'Enjoy your token!',
-                    token: token
-                });
-            }
-
-        }
-
-    });
-}
 
 function getUsers(req, res) {
     try{
         let User = require('../models/user');
+        let jwt = require('jsonwebtoken');
+        let token = "";
+        let queryToken = req.query.token;
+
+        if(queryToken == null) {
+            token = jwt.sign(req.user, process.env.SECRET, {
+                expiresIn: 60 * 60 * 24
+            });
+        }else{
+            token = queryToken;
+        }
+
         User.find({},{ }, function (err, response) {
             if(err){
                 res.render('error.ejs', {
                     error : err.message
                 });
             } else{
-                res.render('profile.ejs', {
+                 res.render('profile.ejs', {
                     signedUser: req.user,
                     user : response,
+                    token: token
                 });
             }
         })
@@ -65,6 +39,7 @@ function addFriend(req, res) {
         let ObjectID = require('mongodb').ObjectID;
         let userId = req.params.userId;
         let User = require('../models/user');
+        let token = req.body.token;
 
         function addFriendId(){
             return new Promise((resolve, reject)=>{
@@ -107,7 +82,8 @@ function addFriend(req, res) {
         addFriendId()
             .then(updateFriendsId)
             .then(()=>{
-                res.redirect('/profile');
+                res.redirect('/profile?token=' + token);
+                //getUsers(req, res, token);
             })
             .catch((error)=>{
                 res.render('error.ejs', {
@@ -122,8 +98,42 @@ function addFriend(req, res) {
     }
 }
 
+function userDetailToken(req, res){
+    try{
+        let jwt = require('jsonwebtoken');
+        var token = req.body.token || req.query.token || req.headers['x-access-token'];
+
+        // decode token
+        if (token) {
+
+            // verifies secret and checks exp
+            jwt.verify(token, process.env.SECRET, function(err, decoded) {
+                if (err) {
+                    return res.json({ success: false, message: 'Failed to authenticate token.' });
+                } else {
+                    res.status(200).json({success: true, user: decoded});
+                }
+            });
+
+        } else {
+
+            // if there is no token
+            // return an error
+            return res.status(403).send({
+                success: false,
+                message: 'No token provided.'
+            });
+
+        }
+    } catch(err){
+        res.render('error.ejs', {
+            error : err.message
+        });
+    }
+}
+
 module.exports = {
-    authenticateViaJWT: authenticateViaJWT,
     getUsers: getUsers,
-    addFriend: addFriend
+    addFriend: addFriend,
+    userDetailToken: userDetailToken
 }

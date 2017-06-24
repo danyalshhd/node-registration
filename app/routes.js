@@ -49,7 +49,7 @@ module.exports = function(app, passport) {
 
     //region LandingPage,Add Friend
     app.get('/profile', isLoggedIn, require("./controller/user").getUsers);
-    app.get('/user/:userId/addFriend', isLoggedIn, require("./controller/user").addFriend);
+    app.post('/user/:userId/addFriend', isLoggedIn, require("./controller/user").addFriend);
 
     //endregion
 
@@ -61,11 +61,8 @@ module.exports = function(app, passport) {
     //endregion
 
     //region JWT
-    app.post('/authenticate', require("./controller/user").authenticateViaJWT);
 
-    app.use(require('./component/auth').tokenAuthentication);
-
-    app.post('/users', require("./controller/user").getUsers);
+    app.post('/user/detail', require("./controller/user").userDetailToken);
 
     //endregion
 
@@ -75,7 +72,7 @@ module.exports = function(app, passport) {
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
-    // if user is authenticated in the session, carry on 
+    // if user is authenticated in the session, carry on
     if (req.isAuthenticated())
         return next();
 
