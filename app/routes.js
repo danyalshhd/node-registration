@@ -1,9 +1,6 @@
 module.exports = function(app, passport) {
 
-    app.get('/', function(req, res) {
-        res.render('index.ejs'); // load the index.ejs file
-    });
-
+    //region Login
     app.get('/login', function(req, res) {
 
         // render the page and pass in any flash data if it exists
@@ -16,6 +13,9 @@ module.exports = function(app, passport) {
         failureFlash : true // allow flash messages
     }));
 
+    //endregion
+
+    //region Signup
     app.get('/signup', function(req, res) {
 
         // render the page and pass in any flash data if it exists
@@ -29,6 +29,9 @@ module.exports = function(app, passport) {
         failureFlash : true // allow flash messages
     }));
 
+    //endregion
+
+    //region Facebook Registration
     app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
 
     // handle the callback after facebook has authenticated the user
@@ -38,16 +41,35 @@ module.exports = function(app, passport) {
             failureRedirect : '/'
         }));
 
-    app.get('/profile', isLoggedIn, function(req, res) {
-        res.render('profile.ejs', {
-            user : req.user // get the user out of session and pass to template
-        });
+    //endregion
+
+    app.get('/', function(req, res) {
+        res.render('index.ejs'); // load the index.ejs file
     });
 
+    //region LandingPage,Add Friend
+    app.get('/profile', isLoggedIn, require("./controller/user").getUsers);
+    app.get('/user/:userId/addFriend', isLoggedIn, require("./controller/user").addFriend);
+
+    //endregion
+
+    //region LogOut
     app.get('/logout', function(req, res) {
         req.logout();
         res.redirect('/');
     });
+    //endregion
+
+    //region JWT
+    app.post('/authenticate', require("./controller/user").authenticateViaJWT);
+
+    app.use(require('./component/auth').tokenAuthentication);
+
+    app.post('/users', require("./controller/user").getUsers);
+
+    //endregion
+
+
 };
 
 // route middleware to make sure a user is logged in
@@ -60,3 +82,4 @@ function isLoggedIn(req, res, next) {
     // if they aren't redirect them to the home page
     res.redirect('/');
 }
+

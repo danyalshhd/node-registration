@@ -23,7 +23,7 @@ eventEmitter.on("sendEmail", (email, done, newUser) => {
         // send mail with defined transport object
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                return done(err);
+                return done(error);
             } else {
                 return done(null, newUser);
             }
